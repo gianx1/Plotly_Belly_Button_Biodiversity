@@ -1,5 +1,5 @@
 function getPlot (id) {
-    d3.json("samples.json").then (sampledata => {
+    d3.json("data/samples.json").then((sampledata) => {
         console.log(sampledata)        
 
         var sampleValues = sampledata.samples[0].sample_values.slice(0,10).reverse();
@@ -67,3 +67,40 @@ function getPlot (id) {
     Plotly.newPlot("bubble", data1, layout_2); 
     });
 }
+
+function getDemoInfo(id) {
+    d3.json("samples.json").then((data)=> {
+        var metadata = data.metadata;
+        console.log(metadata)
+
+        var result = metadata.filter(meta => meta.id.toString() ===  id)[0];
+        var demographicsInfo = d3.select("#sample-metadata");
+
+        demographicsInfo.html("");
+
+        Object.defineProperties(result).forEach((key) => {
+            demographicsInfo.append("h5").text(key[0].toUpperCase() + ": " + key[1] + "\n");
+        });
+    });
+}
+
+function optionChanged(id) {
+    getPlots(id);
+    getDemoInfo(id);
+}
+
+function init() {
+    var dropDown = d3.select("#selDataset");
+    d3.json("samples.json").then((data)=> {
+        console.log(data)
+
+        data.names.forEach(function(name) {
+            dropDown.append("option").text(name).property("value");
+        });
+
+        getPlots(data.names[0]);
+        getDemoInfo(data.names[0]);
+    });
+}
+
+init();
