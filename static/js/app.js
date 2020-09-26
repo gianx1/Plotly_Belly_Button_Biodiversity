@@ -1,5 +1,5 @@
 function getPlot (id) {
-    d3.json("data/samples.json").then((sampledata) => {
+    d3.json("samples.json").then((sampledata) => {
         console.log(sampledata)        
 
         var sampleValues = sampledata.samples[0].sample_values.slice(0,10).reverse();
