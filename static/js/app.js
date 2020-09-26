@@ -1,5 +1,5 @@
-function getPlot (id) {
-    d3.json("samples.json").then((sampledata) => {
+function getPlots(id) {
+    d3.json("data/samples.json").then((sampledata) => {
         console.log(sampledata)        
 
         var sampleValues = sampledata.samples[0].sample_values.slice(0,10).reverse();
@@ -8,7 +8,7 @@ function getPlot (id) {
         var ids = sampledata.samples[0].otu_ids;
         console.log(ids)
 
-        var labels = sampledata.samples[0].otu_lables.slice(0,10);
+        var labels = sampledata.samples[0].otu_labels.slice(0,10);
         console.log(labels)
 
         // get the top 10 OTUs
@@ -17,14 +17,14 @@ function getPlot (id) {
         var OTU_id = OTU_top.map(d => "OTU " + d);
         console.log(`OTU IDS: ${OTU_id}`)
 
-        var labels = sampledata.samples[0].otu_lables.slice(0,10);
+        var labels = sampledata.samples[0].otu_labels.slice(0,10);
         console.log(`OTU_lables: ${labels}`)
         var trace = {
             x: sampleValues,
             y: OTU_id,
             text: labels,
             marker: {
-                color: 'rgb(36, 114, 209)'},
+                color: sampledata.samples[0].otu_ids},
             type: "bar", 
             orientation: "h"
         };
@@ -51,7 +51,6 @@ function getPlot (id) {
             y: sampledata.samples[0].sample_values,
             mode: "markers",
             marker: {
-                size: sampledata.samples[0].sample_values,
                 color: sampledata.samples[0].otu_ids
             },
             text:  sampledata.samples[0].otu_labels  
@@ -64,12 +63,12 @@ function getPlot (id) {
         
         var data1 = [trace1];
 
-    Plotly.newPlot("bubble", data1, layout_2); 
+    Plotly.newPlot("bubble", data1, layout2); 
     });
-}
+};
 
 function getDemoInfo(id) {
-    d3.json("samples.json").then((data)=> {
+    d3.json("data/samples.json").then((data)=> {
         var metadata = data.metadata;
         console.log(metadata)
 
@@ -78,20 +77,16 @@ function getDemoInfo(id) {
 
         demographicsInfo.html("");
 
-        Object.defineProperties(result).forEach((key) => {
+        Object.entries(result).forEach((key) => {
             demographicsInfo.append("h5").text(key[0].toUpperCase() + ": " + key[1] + "\n");
         });
     });
-}
+};
 
-function optionChanged(id) {
-    getPlots(id);
-    getDemoInfo(id);
-}
 
 function init() {
     var dropDown = d3.select("#selDataset");
-    d3.json("samples.json").then((data)=> {
+    d3.json("data/samples.json").then((data)=> {
         console.log(data)
 
         data.names.forEach(function(name) {
@@ -101,6 +96,6 @@ function init() {
         getPlots(data.names[0]);
         getDemoInfo(data.names[0]);
     });
-}
+};
 
 init();
